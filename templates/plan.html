@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h2>Your Weekly Plan</h2>
+        <div class="card p-3 bg-light">
+            <h5>Diet Targets</h5>
+            <div class="row">
+                <div class="col-md-2"><strong>BMR:</strong> {{ diet.bmr }} kcal</div>
+                <div class="col-md-2"><strong>TDEE:</strong> {{ diet.tdee }} kcal</div>
+                <div class="col-md-2 text-primary"><strong>Target:</strong> {{ diet.target_calories }} kcal</div>
+                <div class="col-md-2"><strong>Protein:</strong> {{ diet.protein }}g</div>
+                <div class="col-md-2"><strong>Fats:</strong> {{ diet.fat }}g</div>
+                <div class="col-md-2"><strong>Carbs:</strong> {{ diet.carbs }}g</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for plan in plans %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-dark text-white d-flex justify-content-between">
+                <span>{{ plan.name }}</span>
+                <span class="badge bg-secondary">Day {{ plan.schedule_day }}</span>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for exercise in plan.exercises %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ loop.index }}. {{ exercise.exercise.name }}</strong>
+                            <br>
+                            <small class="text-muted">{{ exercise.exercise.muscle_group }} | {{ exercise.exercise.type }}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary">{{ exercise.sets }} sets</span>
+                            <span class="badge bg-info text-dark">{{ exercise.reps_range }} reps</span>
+                            <br>
+                            <small>{{ exercise.rest_time }}s rest</small>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center">
+        <p>No plan generated yet. Go to <a href="{{ url_for('setup') }}">Settings</a>.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

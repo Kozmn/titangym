@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">Setup Your Profile</div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" step="0.1" name="weight" class="form-control" value="{{ current_user.weight or '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" step="0.1" name="height" class="form-control" value="{{ current_user.height or '' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Age</label>
+                            <input type="number" name="age" class="form-control" value="{{ current_user.age or '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Gender</label>
+                            <select name="gender" class="form-select">
+                                <option value="male" {% if current_user.gender == 'male' %}selected{% endif %}>Male</option>
+                                <option value="female" {% if current_user.gender == 'female' %}selected{% endif %}>Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Goal</label>
+                        <select name="goal" class="form-select">
+                            <option value="strength" {% if current_user.goal == 'strength' %}selected{% endif %}>Strength (Low Reps)</option>
+                            <option value="hypertrophy" {% if current_user.goal == 'hypertrophy' %}selected{% endif %}>Hypertrophy (Muscle Gain)</option>
+                            <option value="endurance" {% if current_user.goal == 'endurance' %}selected{% endif %}>Endurance</option>
+                            <option value="weight_loss" {% if current_user.goal == 'weight_loss' %}selected{% endif %}>Weight Loss</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Experience Level</label>
+                        <select name="experience_level" class="form-select">
+                            <option value="beginner" {% if current_user.experience_level == 'beginner' %}selected{% endif %}>Beginner (Force FBW)</option>
+                            <option value="intermediate" {% if current_user.experience_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Days Available per Week</label>
+                        <input type="number" name="days_available" class="form-control" min="1" max="7" value="{{ current_user.days_available or 3 }}" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Generate Plan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
