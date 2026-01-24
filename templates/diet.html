@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">Add Food (Auto-Calculate)</div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="search">
+                    <div class="mb-3">
+                        <label class="form-label">Food Search</label>
+                        <input type="text" name="food_query" class="form-control" placeholder="e.g. Banana, Chicken Breast" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Weight (g)</label>
+                        <input type="number" name="weight" class="form-control" placeholder="e.g. 100" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </form>
+            </div>
+        </div>
+
+        {% if search_results %}
+        <div class="card mb-4">
+            <div class="card-header">Select Item</div>
+            <ul class="list-group list-group-flush">
+                {% for res in search_results %}
+                <li class="list-group-item">
+                    <form method="POST" class="d-flex justify-content-between align-items-center">
+                        <input type="hidden" name="action" value="add">
+                        <input type="hidden" name="name" value="{{ res.name }}">
+                        <input type="hidden" name="weight" value="{{ res.weight }}">
+                        <input type="hidden" name="calories" value="{{ res.calc_calories }}">
+                        <input type="hidden" name="protein" value="{{ res.calc_protein }}">
+                        <input type="hidden" name="carbs" value="{{ res.calc_carbs }}">
+                        <input type="hidden" name="fat" value="{{ res.calc_fat }}">
+                        
+                        <div>
+                            <strong>{{ res.name }}</strong>
+                            <br>
+                            <small class="text-muted">
+                                {{ res.calc_calories }} kcal | 
+                                P:{{ res.calc_protein }} C:{{ res.calc_carbs }} F:{{ res.calc_fat }}
+                            </small>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-success">Add</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">Today's Nutrition</div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h5>Calories</h5>
+                        <div class="display-6 {% if totals.calories > targets.target_calories %}text-danger{% else %}text-success{% endif %}">
+                            {{ totals.calories }} / {{ targets.target_calories }}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Protein</h5>
+                        <p class="lead">{{ totals.protein|round(1) }} / {{ targets.protein }}g</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Carbs</h5>
+                        <p class="lead">{{ totals.carbs|round(1) }} / {{ targets.carbs }}g</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Fat</h5>
+                        <p class="lead">{{ totals.fat|round(1) }} / {{ targets.fat }}g</p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h5>Log History</h5>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Food</th>
+                            <th>Calories</th>
+                            <th>Macros (P/C/F)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.date.strftime('%H:%M') }}</td>
+                            <td>{{ log.food_name }}</td>
+                            <td>{{ log.calories }}</td>
+                            <td>{{ log.protein }} / {{ log.carbs }} / {{ log.fat }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4">No food logged today.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
